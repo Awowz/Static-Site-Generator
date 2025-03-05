@@ -144,5 +144,43 @@ class TestTextNode(unittest.TestCase):
             new_nodes,
         )
 
+    def test_extract_images_single(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif), [am fake](https:/)"
+        extract_list = extract_markdown_images(text)
+        compaire_list = [("rick roll", "https://i.imgur.com/aKaOqIh.gif")]
+        self.assertListEqual(extract_list, compaire_list)
+
+    def test_extract_images_double(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        extract_list = extract_markdown_images(text)
+        compaire_list = [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+        self.assertListEqual(extract_list, compaire_list)
+    
+    def test_extract_images_none(self):
+        text = "This is text with a ![rick roll]whats up"
+        extract_list = extract_markdown_images(text)
+        compaire_list = []
+        self.assertEqual(extract_list, compaire_list)
+
+    def test_extract_links_double(self):
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        extract_list = extract_markdown_links(text)
+        compaire_list = [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
+        self.assertListEqual(extract_list, compaire_list)
+
+    def test_extract_links_single(self):
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)"
+        extract_list = extract_markdown_links(text)
+        compaire_list = [("to boot dev", "https://www.boot.dev")]
+        self.assertListEqual(extract_list, compaire_list)
+
+    def test_extract_links_none(self):
+        text = "This is text with a link ![to boot dev](https://www.boot.dev) and [to youtube](ajfklsa;"
+        extract_list = extract_markdown_links(text)
+        compaire_list = []
+        self.assertEqual(extract_list, compaire_list)
+
+
+
 if __name__ == "__main__":
     unittest.main()
