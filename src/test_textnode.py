@@ -180,6 +180,11 @@ class TestTextNode(unittest.TestCase):
         compaire_list = []
         self.assertEqual(extract_list, compaire_list)
 
+    def test_split_images_single(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif), [am fake](https:/)"
+        nodes = [TextNode(text, TextType.TEXT)]
+        split_nodes_image(nodes)
+
 
 
 if __name__ == "__main__":

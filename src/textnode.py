@@ -64,4 +64,27 @@ def extract_markdown_links(text):
     matches = re.findall(r"(?<!!)\[([^\]]+)\]\(([^\)]+)\)", text)
     return matches
 
+def split_nodes_image(old_nodes):
+    new_list = []
+    for singe_node in old_nodes:
+        matches = extract_markdown_images(singe_node.text)
+        if matches == []:
+            new_list.append(singe_node)
+            continue
+        for single_extracted_image in matches:
+            alt_text, url = single_extracted_image
+            split_on_str = f"![{alt_text}]({url})"
+            str_split = singe_node.text.split(split_on_str)
+            print(str_split)
+            print(len(str_split))
+            print(singe_node.text)
+            for count in range(len(str_split)):
+                if str_split[count] == "":
+                    continue
+                if count % 2 == 0:
+                    new_list.append(TextNode(str_split[count], TextType.TEXT))
+                else:
+                    new_list.append(TextNode(str_split[count], TextType.IMAGE_TEXT))
 
+def split_nodes_link(old_nodes):
+    pass
