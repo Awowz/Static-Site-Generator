@@ -67,6 +67,9 @@ def extract_markdown_links(text):
 def split_nodes_image(old_nodes):
     new_list = []
     for singe_node in old_nodes:
+        if singe_node.text_type != TextType.TEXT:
+            new_list.append(singe_node)
+            continue
         matches = extract_markdown_images(singe_node.text)
         if matches == []:
             new_list.append(singe_node)
@@ -76,16 +79,41 @@ def split_nodes_image(old_nodes):
             alt_text, url = single_extracted_image
             split_on_str = f"![{alt_text}]({url})"
             str_split = remaining_text.split(split_on_str, 1)
-            print(remaining_text)
             if str_split[0] == '' and str_split[1] == '':
                 new_list.append(TextNode(alt_text, TextType.IMAGE_TEXT, url))
                 continue
             elif str_split[0]: ##not empty
                 new_list.append(TextNode(str_split[0], TextType.TEXT))
             new_list.append(TextNode(alt_text, TextType.IMAGE_TEXT, url))
-            remaining_text = str_split[1] if len(str_split) > 1 else ""
-    print(new_list)
+            if len(matches) > 1:
+                remaining_text = str_split[1] if len(str_split) > 1 else ""
+            elif str_split[1]:
+                new_list.append(TextNode(str_split[1], TextType.TEXT))
     return new_list
 
 def split_nodes_link(old_nodes):
-    pass
+    new_list = []
+    for singe_node in old_nodes:
+        if singe_node.text_type != TextType.TEXT:
+            new_list.append(singe_node)
+            continue
+        matches = extract_markdown_links(singe_node.text)
+        if matches == []:
+            new_list.append(singe_node)
+            continue
+        remaining_text = singe_node.text
+        for single_extracted_image in matches:
+            alt_text, url = single_extracted_image
+            split_on_str = f"[{alt_text}]({url})"
+            str_split = remaining_text.split(split_on_str, 1)
+            if str_split[0] == '' and str_split[1] == '':
+                new_list.append(TextNode(alt_text, TextType.LINK_TEXT, url))
+                continue
+            elif str_split[0]: ##not empty
+                new_list.append(TextNode(str_split[0], TextType.TEXT))
+            new_list.append(TextNode(alt_text, TextType.LINK_TEXT, url))
+            if len(matches) > 1:
+                remaining_text = str_split[1] if len(str_split) > 1 else ""
+            elif str_split[1]:
+                new_list.append(TextNode(str_split[1], TextType.TEXT))
+    return new_list
