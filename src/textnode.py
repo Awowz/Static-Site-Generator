@@ -71,20 +71,21 @@ def split_nodes_image(old_nodes):
         if matches == []:
             new_list.append(singe_node)
             continue
+        remaining_text = singe_node.text
         for single_extracted_image in matches:
             alt_text, url = single_extracted_image
             split_on_str = f"![{alt_text}]({url})"
-            str_split = singe_node.text.split(split_on_str)
-            print(str_split)
-            print(len(str_split))
-            print(singe_node.text)
-            for count in range(len(str_split)):
-                if str_split[count] == "":
-                    continue
-                if count % 2 == 0:
-                    new_list.append(TextNode(str_split[count], TextType.TEXT))
-                else:
-                    new_list.append(TextNode(str_split[count], TextType.IMAGE_TEXT))
+            str_split = remaining_text.split(split_on_str, 1)
+            print(remaining_text)
+            if str_split[0] == '' and str_split[1] == '':
+                new_list.append(TextNode(alt_text, TextType.IMAGE_TEXT, url))
+                continue
+            elif str_split[0]: ##not empty
+                new_list.append(TextNode(str_split[0], TextType.TEXT))
+            new_list.append(TextNode(alt_text, TextType.IMAGE_TEXT, url))
+            remaining_text = str_split[1] if len(str_split) > 1 else ""
+    print(new_list)
+    return new_list
 
 def split_nodes_link(old_nodes):
     pass

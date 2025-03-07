@@ -183,9 +183,38 @@ class TestTextNode(unittest.TestCase):
     def test_split_images_single(self):
         text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif), [am fake](https:/)"
         nodes = [TextNode(text, TextType.TEXT)]
-        split_nodes_image(nodes)
+        compaire_nodes = [TextNode("This is text with a ", TextType.TEXT), TextNode("rick roll", TextType.IMAGE_TEXT, "https://i.imgur.com/aKaOqIh.gif"),TextNode(", [am fake](https:/)", TextType.TEXT)]
+        extract_list = split_nodes_image(nodes)
+        self.assertListEqual(extract_list, compaire_nodes)
+"""
+    def test_split_images_end_edgecase(self):
+        text = "this is the begining![rick roll](https://i.imgur.com/aKaOqIh.gif)"
+        nodes = [TextNode(text, TextType.TEXT)]
+        compaire_nodes = [TextNode("this is the begining", TextType.TEXT), TextNode("rick roll", TextType.IMAGE_TEXT, "https://i.imgur.com/aKaOqIh.gif")]
+        extract_list = split_nodes_image(nodes)
+        self.assertListEqual(extract_list, compaire_nodes)
+    
+    def test_split_images_start_edgecase(self):
+        text = "![rick roll](https://i.imgur.com/aKaOqIh.gif)this is the begining"
+        nodes = [TextNode(text, TextType.TEXT)]
+        compaire_nodes = [TextNode("rick roll", TextType.IMAGE_TEXT, "https://i.imgur.com/aKaOqIh.gif"), TextNode("this is the begining", TextType.TEXT),]
+        extract_list = split_nodes_image(nodes)
+        self.assertListEqual(extract_list, compaire_nodes)
 
+    def test_split_images_solo(self):
+        text = "![rick roll](https://i.imgur.com/aKaOqIh.gif)"
+        nodes = [TextNode(text, TextType.TEXT)]
+        compaire_nodes = [TextNode("rick roll", TextType.IMAGE_TEXT, "https://i.imgur.com/aKaOqIh.gif")]
+        extract_list = split_nodes_image(nodes)
+        self.assertListEqual(extract_list, compaire_nodes)
 
+    def test_split_images_multi_dif(self):
+        text = "![rick roll](https://i.imgur.com/aKaOqIh.gif)this is the begining![meowmeow](https://i.imgur.com/aKa1qIh.gif)"
+        nodes = [TextNode(text, TextType.TEXT)]
+        compaire_nodes = [TextNode("rick roll", TextType.IMAGE_TEXT, "https://i.imgur.com/aKaOqIh.gif"), TextNode("this is the begining", TextType.TEXT),TextNode("rick roll", TextType.IMAGE_TEXT, "https://i.imgur.com/aKaOqIh.gif")]
+        extract_list = split_nodes_image(nodes)
+        self.assertListEqual(extract_list, compaire_nodes)
+"""
 
 if __name__ == "__main__":
     unittest.main()
