@@ -1,5 +1,24 @@
 import re
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, LeafNode
+
+def text_node_to_html_node(text_node):
+    match (text_node.text_type):
+        case TextType.TEXT:
+            return LeafNode(None, text_node.text)
+        case TextType.BOLD_TEXT:
+            return LeafNode("b", text_node.text)
+        case TextType.ITALIC_TEXT:
+            return LeafNode("i", text_node.text)
+        case TextType.CODE_TEXT:
+            return LeafNode("code", text_node.text)
+        case TextType.LINK_TEXT:
+            return LeafNode("a", text_node.text, {"href": text_node.url})
+        case TextType.IMAGE_TEXT:
+            return LeafNode("img", "", {"src": text_node.url, "alt":text_node.text})
+    raise ValueError(f"invalid text type: {text_node.text_type}")
+
+
+
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_list = []
@@ -17,7 +36,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                     new_list.append(TextNode(str_split[count], TextType.TEXT))
                 else:
                     new_list.append(TextNode(str_split[count], text_type))
-            return new_list
+    return new_list
 
 
 def extract_markdown_images(text):
@@ -82,3 +101,12 @@ def split_nodes_link(old_nodes):
             elif str_split[1]:
                 new_list.append(TextNode(str_split[1], TextType.TEXT))
     return new_list
+
+def text_to_textnodes(text):
+    current_nodes = split_nodes_delimiter([TextNode(text,TextType.TEXT)], "**", TextType.BOLD_TEXT)
+    current_nodes = split_nodes_delimiter(current_nodes, "_", TextType.ITALIC_TEXT)
+    current_nodes = split_nodes_delimiter(current_nodes, "`", TextType.CODE_TEXT)
+    current_nodes = split_nodes_image(current_nodes)
+    current_nodes = split_nodes_link(current_nodes)
+
+    return current_nodes
