@@ -110,3 +110,20 @@ def text_to_textnodes(text):
     current_nodes = split_nodes_link(current_nodes)
 
     return current_nodes
+
+def markdown_to_blocks(markdown_doc):
+    split_str = markdown_doc.split("\n\n")
+    clean_blocks = []
+    for x in range(len(split_str)):
+        if split_str[x] == "":
+            continue
+        clean_str = split_str[x].strip()
+        str_line = clean_str.split("\n")
+        if len(str_line) > 1:
+            scrubbed = []
+            for line in str_line:
+                scrubbed.append(line.strip())
+            clean_str = "\n".join(scrubbed)
+        clean_blocks.append(clean_str)
+    return clean_blocks
+    
