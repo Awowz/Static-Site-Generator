@@ -31,7 +31,7 @@ def markdown_to_blocks(markdown_doc):
 
 def block_to_block_type(markdown_block_text):
     lines = markdown_block_text.split("\n")
-    matches = re.findall(r"^(#{1,6})", markdown_block_text)
+    matches = re.findall(r"^(#{1,6} )", markdown_block_text)
     if matches:
         return BlockType.HEADING
     
@@ -66,20 +66,34 @@ def text_to_children(text):
 
 def markdown_to_html_node(markdown):
     block_list_of_markdown = markdown_to_blocks(markdown)
+    html_parents = []
     for single_markdown_block in block_list_of_markdown:
         block_type = block_to_block_type(single_markdown_block)
+        stripped_text = single_markdown_block.replace("\n", " ")
         
         match block_type:
             case BlockType.PARAGRAPH:
-                html_childs_list = text_to_children(single_markdown_block)
+                html_childs_list = text_to_children(stripped_text)
                 html_parent = ParentNode("p", html_childs_list)
+                html_parents.append(html_parent)
             case BlockType.QUOTE:
                 pass
             case BlockType.HEADING:
-                pass
+                count = 0
+                print(f"current header: {stripped_text}")
+                for x in range(len(stripped_text)):
+                    if x > 6 or stripped_text[x] != "#":
+                        break
+                    count += 1
+                print(f"found: {count}")
             case BlockType.CODE:
-                pass
+                clean_str = single_markdown_block.replace("```\n", "")
+                clean_str = clean_str.replace("```", "")
+                html_parent = ParentNode("pre", [LeafNode("code", clean_str)])
+                html_parents.append(html_parent)
             case BlockType.UNORDERED_LIST:
                 pass
             case BlockType.ORDERED_LIST:
                 pass
+    html_block = ParentNode("div", html_parents)
+    return html_block

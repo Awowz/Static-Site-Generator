@@ -5,13 +5,13 @@ from blocknode import *
 class TestBlocknode(unittest.TestCase):
     def test_markdown_to_blocks(self):
         md = """
-        This is **bolded** paragraph
+This is **bolded** paragraph
 
-        This is another paragraph with _italic_ text and `code` here
-        This is the same paragraph on a new line
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
 
-        - This is a list
-        - with items
+- This is a list
+- with items
         """
         blocks = markdown_to_blocks(md)
         self.assertEqual(
@@ -49,7 +49,7 @@ This is the same paragraph on a new line
     
 
     def test_blocktype_heading(self):
-        text = "###whats up\nhows it going?\n ok goodbye\n```"
+        text = "### whats up\nhows it going?\n ok goodbye\n```"
         blocktype = block_to_block_type(text)
         self.assertEqual(blocktype, BlockType.HEADING)
 
@@ -99,16 +99,16 @@ This is another paragraph with _italic_ text and `code` here
 """
 
         node = markdown_to_html_node(md)
-        '''html = node.to_html()
+        html = node.to_html()        
         self.assertEqual(
             html,
             "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
-        )'''
+        )
 
 
 
 
-'''
+
     def test_codeblock(self):
         md = """
 ```
@@ -123,7 +123,20 @@ the **same** even with inline stuff
             html,
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
-'''
+
+    def test_headings(self):
+        md = """
+# This is a Heading h1
+sup
+## This is a Heading h2
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        '''self.assertEqual(
+            html,
+            "<div><h1>This is a Heading h1</h1><p>sup</p><h2>This is a Heading h2</h2></div>",
+        )'''
 
 if __name__ == "__main__":
     unittest.main()
