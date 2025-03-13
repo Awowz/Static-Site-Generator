@@ -125,18 +125,24 @@ the **same** even with inline stuff
         )
 
     def test_headings(self):
-        md = """
-# This is a Heading h1
-sup
-## This is a Heading h2
-"""
+        md = "# This is a Heading h1"
 
         node = markdown_to_html_node(md)
         html = node.to_html()
-        '''self.assertEqual(
+        self.assertEqual(
             html,
-            "<div><h1>This is a Heading h1</h1><p>sup</p><h2>This is a Heading h2</h2></div>",
-        )'''
+            "<div><h1>This is a Heading h1</h1></div>",
+        )
+
+    def test_headings6(self):
+        md = "###### This is a Heading h6"
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h6>This is a Heading h6</h6></div>",
+        )
 
 if __name__ == "__main__":
     unittest.main()

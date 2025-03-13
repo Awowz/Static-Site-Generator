@@ -80,12 +80,13 @@ def markdown_to_html_node(markdown):
                 pass
             case BlockType.HEADING:
                 count = 0
-                print(f"current header: {stripped_text}")
                 for x in range(len(stripped_text)):
                     if x > 6 or stripped_text[x] != "#":
                         break
                     count += 1
-                print(f"found: {count}")
+                stripped_text = stripped_text[count + 1:]
+                html_parent = ParentNode(f"h{count}", text_to_children(stripped_text))
+                html_parents.append(html_parent)
             case BlockType.CODE:
                 clean_str = single_markdown_block.replace("```\n", "")
                 clean_str = clean_str.replace("```", "")
