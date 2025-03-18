@@ -64,12 +64,13 @@ def text_to_children(text):
     return html_child_list
 
 
-def markdown_to_html_node(markdown): #temp for push
+def markdown_to_html_node(markdown):
     block_list_of_markdown = markdown_to_blocks(markdown)
     html_parents = []
     for single_markdown_block in block_list_of_markdown:
         block_type = block_to_block_type(single_markdown_block)
         stripped_text = single_markdown_block.replace("\n", " ")
+        broken_down_str = single_markdown_block.split("\n")
         
         match block_type:
             case BlockType.PARAGRAPH:
@@ -77,7 +78,12 @@ def markdown_to_html_node(markdown): #temp for push
                 html_parent = ParentNode("p", html_childs_list)
                 html_parents.append(html_parent)
             case BlockType.QUOTE:
-                pass
+                for x in range(len(broken_down_str)):
+                    broken_down_str[x] = broken_down_str[x][2:]
+                put_together = "\n".join(broken_down_str)
+                html_childs_list = text_to_children(put_together)
+                html_parent = ParentNode("blockquote", html_childs_list)
+                html_parents.append(html_parent)
             case BlockType.HEADING:
                 count = 0
                 for x in range(len(stripped_text)):

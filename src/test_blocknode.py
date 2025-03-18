@@ -144,5 +144,17 @@ the **same** even with inline stuff
             "<div><h6>This is a Heading h6</h6></div>",
         )
 
+    def test_quotes(self):
+        md = """ 
+> hia
+> hia1
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>hia\nhia1</blockquote></div>",
+        )
+
 if __name__ == "__main__":
     unittest.main()
