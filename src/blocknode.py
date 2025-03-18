@@ -80,7 +80,7 @@ def markdown_to_html_node(markdown):
             case BlockType.QUOTE:
                 for x in range(len(broken_down_str)):
                     broken_down_str[x] = broken_down_str[x][2:]
-                put_together = "\n".join(broken_down_str)
+                put_together = " ".join(broken_down_str)
                 html_childs_list = text_to_children(put_together)
                 html_parent = ParentNode("blockquote", html_childs_list)
                 html_parents.append(html_parent)
@@ -99,8 +99,20 @@ def markdown_to_html_node(markdown):
                 html_parent = ParentNode("pre", [LeafNode("code", clean_str)])
                 html_parents.append(html_parent)
             case BlockType.UNORDERED_LIST:
-                pass
+                for x in range(len(broken_down_str)):
+                    broken_down_str[x] = broken_down_str[x][2:]
+                html_childs_list = []
+                for x in broken_down_str:
+                    html_childs_list.append(ParentNode("li", text_to_children(x)))
+                html_parent = ParentNode("ul", html_childs_list)
+                html_parents.append(html_parent)
             case BlockType.ORDERED_LIST:
-                pass
+                for x in range(len(broken_down_str)):
+                    broken_down_str[x] = broken_down_str[x][3:]
+                html_childs_list = []
+                for x in broken_down_str:
+                    html_childs_list.append(ParentNode("li", text_to_children(x)))
+                html_parent = ParentNode("ol", html_childs_list)
+                html_parents.append(html_parent)
     html_block = ParentNode("div", html_parents)
     return html_block
