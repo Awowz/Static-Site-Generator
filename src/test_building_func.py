@@ -273,6 +273,8 @@ class TestTextNode(unittest.TestCase):
         ]
         self.assertListEqual(extracted_nodes, compaire_nodes)
 
+
+
     
 if __name__ == "__main__":
     unittest.main()

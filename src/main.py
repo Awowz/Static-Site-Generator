@@ -1,9 +1,32 @@
 import os
 import shutil
 from textnode import *
+from blocknode import markdown_to_html_node
 
 PUBLIC_PATH = "public"
 STATIC_PATH = "static"
+
+
+def extract_title(markdown):
+    lines = markdown.split("\n")
+    if not lines[0].startswith("#"):
+        raise Exception("file contiants no starter header")
+    return lines[0][2:]
+
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+    f = open(from_path, 'r')
+    file_contents = f.read()
+    f1 = open(template_path, 'r')
+    template_contents = f1.read()
+    node = markdown_to_html_node(file_contents)
+    html = node.to_html()
+    title = extract_title(file_contents)
+    template_contents = template_contents.replace("{{ Title }}", title)
+    template_contents = template_contents.replace("{{ Content }}", html)
+    dest = open(dest_path, "w+")
+    dest.write(template_contents)
+
 
 def clear_public():
     if not os.path.exists(PUBLIC_PATH):
@@ -32,6 +55,7 @@ def generate_new_public_dir():
 
 def main():
     generate_new_public_dir()
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 if __name__ == "__main__":
     main()
