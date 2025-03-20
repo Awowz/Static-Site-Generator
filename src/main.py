@@ -5,6 +5,9 @@ from blocknode import markdown_to_html_node
 
 PUBLIC_PATH = "public"
 STATIC_PATH = "static"
+CONTENT_PATH = "./content"
+TEMPLET_FILE = "template.html"
+PUBLIC_PATH = "./public"
 
 
 def extract_title(markdown):
@@ -27,6 +30,15 @@ def generate_page(from_path, template_path, dest_path):
     dest = open(dest_path, "w+")
     dest.write(template_contents)
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):#note for me. code is done, but html server isnt diplaying html nor index??
+    for file_object in os.listdir(dir_path_content):
+        full_object_path = os.path.join(dir_path_content, file_object)
+        if os.path.isfile(full_object_path):
+            generate_page(full_object_path, template_path, os.path.join(dest_dir_path, file_object))
+        else:
+            full_destination_path = os.path.join(dest_dir_path, file_object)
+            os.mkdir(full_destination_path)
+            generate_pages_recursive(full_object_path,template_path, full_destination_path)
 
 def clear_public():
     if not os.path.exists(PUBLIC_PATH):
@@ -43,7 +55,6 @@ def recursive_file_copy(current_file_path, dest_path):
             os.mkdir(full_destination_path)
             recursive_file_copy(full_object_path,full_destination_path)
 
-    #issue with .png not registering as file?
 
 def generate_new_public_dir():
     try:
@@ -55,7 +66,7 @@ def generate_new_public_dir():
 
 def main():
     generate_new_public_dir()
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive(CONTENT_PATH, TEMPLET_FILE, PUBLIC_PATH)
 
 if __name__ == "__main__":
     main()
