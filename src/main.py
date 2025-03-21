@@ -27,6 +27,7 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(file_contents)
     template_contents = template_contents.replace("{{ Title }}", title)
     template_contents = template_contents.replace("{{ Content }}", html)
+    dest_path = dest_path.replace(".md", ".html")
     dest = open(dest_path, "w+")
     dest.write(template_contents)
 
