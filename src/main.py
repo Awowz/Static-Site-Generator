@@ -4,7 +4,7 @@ import sys
 from textnode import *
 from blocknode import markdown_to_html_node
 
-PUBLIC_PATH = "./doc"
+PUBLIC_PATH = "./docs"
 STATIC_PATH = "./static"
 CONTENT_PATH = "./content"
 TEMPLET_FILE = "template.html"
